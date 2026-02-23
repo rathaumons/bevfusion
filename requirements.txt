@@ -1,0 +1,11 @@
+Pillow==8.4.0
+tqdm
+torchpack
+mmdet==2.20.0
+nuscenes-devkit==1.1.11
+numba
+flash-attn==1.0.9
+yapf==0.40.1
+mpi4py==3.0.3
+numpy==1.23.5
+opencv-python<4.6
