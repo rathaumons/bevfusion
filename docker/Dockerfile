@@ -36,6 +36,7 @@ if [ -f "/root/miniconda3/bin/activate" ]; then
     source /root/miniconda3/bin/activate
     conda deactivate
     conda activate bevfusion
+    export PYTHONWARNINGS="ignore"
     cd /workspace
     clear
     history -c && history -w
