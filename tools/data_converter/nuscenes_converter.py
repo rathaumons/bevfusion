@@ -40,7 +40,7 @@ nus_attributes = (
 
 
 def create_nuscenes_infos(
-    root_path, info_prefix, version="v1.0-trainval", max_sweeps=10
+    root_path, info_prefix, version="v1.0-trainval", max_sweeps=10, half_train_val=False
 ):
     """Create info file of nuscene dataset.
 
@@ -53,12 +53,14 @@ def create_nuscenes_infos(
             Default: 'v1.0-trainval'
         max_sweeps (int): Max number of sweeps.
             Default: 10
+        half_train_val (bool): Make half of the scenes for train and the other for val.
+            Default: False
     """
+
     from nuscenes.nuscenes import NuScenes
 
     nusc = NuScenes(version=version, dataroot=root_path, verbose=True)
     from nuscenes.utils import splits
-
     available_vers = ["v1.0-trainval", "v1.0-test", "v1.0-mini"]
     assert version in available_vers
     if version == "v1.0-trainval":
@@ -76,17 +78,26 @@ def create_nuscenes_infos(
     # filter existing scenes.
     available_scenes = get_available_scenes(nusc)
     available_scene_names = [s["name"] for s in available_scenes]
-    train_scenes = list(filter(lambda x: x in available_scene_names, train_scenes))
-    val_scenes = list(filter(lambda x: x in available_scene_names, val_scenes))
-    train_scenes = set(
-        [
-            available_scenes[available_scene_names.index(s)]["token"]
-            for s in train_scenes
-        ]
-    )
-    val_scenes = set(
-        [available_scenes[available_scene_names.index(s)]["token"] for s in val_scenes]
-    )
+
+    # Override default splits
+    if half_train_val:
+        import random
+        random.shuffle(available_scenes)
+        half_split = max(1, len(available_scenes)//2)
+        train_scenes = set([s["token"] for s in available_scenes[:half_split]])
+        val_scenes = set([s["token"] for s in available_scenes[half_split:]])
+    else:
+        train_scenes = list(filter(lambda x: x in available_scene_names, train_scenes))
+        val_scenes = list(filter(lambda x: x in available_scene_names, val_scenes))
+        train_scenes = set(
+            [
+                available_scenes[available_scene_names.index(s)]["token"]
+                for s in train_scenes
+            ]
+        )
+        val_scenes = set(
+            [available_scenes[available_scene_names.index(s)]["token"] for s in val_scenes]
+        )
 
     test = "test" in version
     if test:
@@ -117,6 +128,20 @@ def create_nuscenes_infos(
         data["infos"] = val_nusc_infos
         info_val_path = osp.join(root_path, "{}_infos_val.pkl".format(info_prefix))
         mmcv.dump(data, info_val_path)
+
+    print("\n\n******************************************************************************************")
+    print(f"half_train_val = {half_train_val}")
+    print("******************************************************************************************")
+    print(f"available_scenes = {available_scenes}")
+    print("******************************************************************************************")
+    print(f"available_scene_names = {available_scene_names}")
+    print("******************************************************************************************")
+    print(f"train_scenes = {train_scenes}")
+    print("******************************************************************************************")
+    print(f"val_scenes = {val_scenes}")
+    print("******************************************************************************************")
+    print(f"test = {test}")
+    print("******************************************************************************************\n\n")
 
 
 def get_available_scenes(nusc):
