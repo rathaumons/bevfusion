@@ -2,7 +2,11 @@
 
 ## Evaluation
 
-- Default command for evaluation a model: `torchpack dist-run -np [number of GPU] python tools/test.py [config file path] pretrained/[checkpoint name].pth --eval [evaluation type]`
+Default command for evaluating a model: 
+
+```bash
+torchpack dist-run -np [number of GPU] python tools/test.py [config file path] pretrained/[checkpoint name].pth --eval [evaluation type]
+```
 
 - Evaluate with 1 GPU:
 
@@ -42,6 +46,12 @@
 
 ## Training
 
+Default command for training a model: 
+
+```bash
+torchpack dist-run -np [number of GPU] python tools/train.py [config file path] [extra options]
+```
+
 - Train with 1 GPU:
 
   <details><summary>Show more details</summary>
@@ -70,13 +80,13 @@
     torchpack dist-run -np 1 python tools/train.py configs/nuscenes/seg/lidar-centerpoint-bev128.yaml
     ```
   
-  - Train the BEVFusion detection model model:
+  - Train the BEVFusion detection model:
 
     ```bash
     torchpack dist-run -np 1 python tools/train.py configs/nuscenes/det/transfusion/secfpn/camera+lidar/swint_v0p075/convfuser.yaml --model.encoders.camera.backbone.init_cfg.checkpoint pretrained/swint-nuimages-pretrained.pth --load_from pretrained/lidar-only-det.pth 
     ```
   
-  - Train the BEVFusion segmentation model model:
+  - Train the BEVFusion segmentation model:
 
     ```bash
     torchpack dist-run -np 1 python tools/train.py configs/nuscenes/seg/fusion-bev256d2-lss.yaml --model.encoders.camera.backbone.init_cfg.checkpoint pretrained/swint-nuimages-pretrained.pth
@@ -112,13 +122,13 @@
     torchpack dist-run -np 2 python tools/train.py configs/nuscenes/seg/lidar-centerpoint-bev128.yaml
     ```
   
-  - Train the BEVFusion detection model model:
+  - Train the BEVFusion detection model:
 
     ```bash
     torchpack dist-run -np 2 python tools/train.py configs/nuscenes/det/transfusion/secfpn/camera+lidar/swint_v0p075/convfuser.yaml --model.encoders.camera.backbone.init_cfg.checkpoint pretrained/swint-nuimages-pretrained.pth --load_from pretrained/lidar-only-det.pth 
     ```
   
-  - Train the BEVFusion segmentation model model:
+  - Train the BEVFusion segmentation model:
 
     ```bash
     torchpack dist-run -np 2 python tools/train.py configs/nuscenes/seg/fusion-bev256d2-lss.yaml --model.encoders.camera.backbone.init_cfg.checkpoint pretrained/swint-nuimages-pretrained.pth
