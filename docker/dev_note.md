@@ -248,7 +248,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
   pip install \
       Pillow==8.4.0 \
       tqdm \
-      torchpack \
+      git+https://github.com/rathaumons/torchpack.git \
       mmdet==2.20.0 \
       nuscenes-devkit==1.1.11 \
       numba \
