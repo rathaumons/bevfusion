@@ -48,7 +48,12 @@ class GTDepth:
         img = _unwrap(data["img"])
         if isinstance(img, (list, tuple)):
             img = torch.stack(
-                [im if torch.is_tensor(im) else torch.as_tensor(im) for im in img]
+                [
+                    im
+                    if torch.is_tensor(im)
+                    else torch.as_tensor(im, dtype=torch.float32)
+                    for im in img
+                ]
             )
         elif not torch.is_tensor(img):
             img = torch.as_tensor(img)
