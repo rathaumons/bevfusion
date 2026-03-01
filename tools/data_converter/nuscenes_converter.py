@@ -252,6 +252,7 @@ def _fill_trainval_infos(nusc,
                     radar_path, _, radar_intrin = nusc.get_sample_data(radar_token)
                     radar_info = obtain_sensor2top(nusc, radar_token, l2e_t, l2e_r_mat,e2g_t, e2g_r_mat, radar_name)
                     sweeps.append(radar_info)
+                    break
             
             info['radars'].update({radar_name: sweeps})
         # obtain sweeps for a single key-frame
