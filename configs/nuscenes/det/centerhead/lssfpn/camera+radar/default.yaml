@@ -2,11 +2,11 @@
 data:
   train:
     dataset:
-      ann_file: nuscenes/nuscenes_infos_train.pkl
+      ann_file: data/nuscenes/nuscenes_infos_train.pkl
   val:
-    ann_file: nuscenes/nuscenes_infos_val.pkl
+    ann_file: data/nuscenes/nuscenes_infos_val.pkl
   test:
-    ann_file: nuscenes/nuscenes_infos_val.pkl
+    ann_file: data/nuscenes/nuscenes_infos_val.pkl
     
 augment2d:
   resize: [[0.38, 0.55], [0.48, 0.48]]
