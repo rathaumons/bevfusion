@@ -10,6 +10,7 @@ __all__ = ["BaseTransform", "BaseDepthTransform"]
 
 
 def _meta_to_tensor(metas, key, ref):
+    """Extract `key` from metas and convert to a tensor on ref's device/dtype."""
     if metas is None:
         return None
     if isinstance(metas, dict):
