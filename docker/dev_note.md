@@ -1,4 +1,4 @@
-# DEV NOTE 20260301
+# DEV NOTE 20260302
 
 This file contains the original, fully-tested manual steps used to build the BEVFusion training environment interactively inside a container.
 
@@ -320,7 +320,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
 - Clone and build `bevfusion` inside the running container:
   ```bash
   cd /workspace
-  git clone https://github.com/rathaumons/bevfusion.git
+  git clone https://github.com/rathaumons/bevfusionx.git
   cd bevfusion
   python setup.py develop
   pip list
