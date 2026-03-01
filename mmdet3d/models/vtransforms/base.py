@@ -350,10 +350,10 @@ class BaseDepthTransform(BaseTransform):
         )
 
         mats_dict = {
-            'intrin_mats': intrins, 
-            'ida_mats': img_aug_matrix, 
+            'intrin_mats': cam_intrinsic,
+            'ida_mats': img_aug_matrix,
             'bda_mat': lidar_aug_matrix,
-            'sensor2ego_mats': sensor2ego, 
+            'sensor2ego_mats': sensor2ego,
         }
         x = self.get_cam_feats(img, depth, mats_dict)
 
