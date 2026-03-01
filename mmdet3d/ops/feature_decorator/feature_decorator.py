@@ -1,4 +1,3 @@
-
 from . import feature_decorator_ext
 
 
@@ -7,5 +6,3 @@ __all__ = ["feature_decorator"]
 def feature_decorator(features, num_voxels, coords, vx, vy, x_offset, y_offset, normalize_coords, use_cluster, use_center):
     result = feature_decorator_ext.feature_decorator_forward(features, coords, num_voxels, vx, vy, x_offset, y_offset, normalize_coords, use_cluster, use_center)
     return result
-
-
