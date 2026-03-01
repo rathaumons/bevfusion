@@ -28,16 +28,24 @@ class GTDepth:
         self.keyframe_only = keyframe_only 
 
     def __call__(self, data):
-        sensor2ego = data['camera2ego'].data
-        cam_intrinsic = data['camera_intrinsics'].data 
-        img_aug_matrix = data['img_aug_matrix'].data 
-        bev_aug_matrix = data['lidar_aug_matrix'].data
-        lidar2ego = data['lidar2ego'].data 
-        camera2lidar = data['camera2lidar'].data
-        lidar2image = data['lidar2image'].data
+        def _unwrap(x):
+            return getattr(x, "data", x)
 
-        points = data['points'].data 
-        img = data['img'].data
+        def _to_tensor(x):
+            x = _unwrap(x)
+            x = getattr(x, "tensor", x)
+            return x if torch.is_tensor(x) else torch.as_tensor(x)
+
+        sensor2ego = _to_tensor(data["camera2ego"])
+        cam_intrinsic = _to_tensor(data["camera_intrinsics"])
+        img_aug_matrix = _to_tensor(data["img_aug_matrix"])
+        bev_aug_matrix = _to_tensor(data["lidar_aug_matrix"])
+        lidar2ego = _to_tensor(data["lidar2ego"])
+        camera2lidar = _to_tensor(data["camera2lidar"])
+        lidar2image = _to_tensor(data["lidar2image"])
+
+        points = _to_tensor(data["points"])
+        img = _unwrap(data["img"])
 
         if self.keyframe_only:
             points = points[points[:, 4] == 0]
