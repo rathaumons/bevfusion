@@ -272,11 +272,11 @@ class DepthNet(nn.Module):
 
     @force_fp32()
     def forward(self, x, mats_dict):
-        intrins = mats_dict['intrin_mats'][:, ..., :3, :3]
+        intrins = mats_dict['intrin_mats'][:, :, :3, :3]
         batch_size = intrins.shape[0]
         num_cams = intrins.shape[1]
-        ida = mats_dict['ida_mats'][:, ...]
-        sensor2ego = mats_dict['sensor2ego_mats'][:, ..., :3, :]
+        ida = mats_dict['ida_mats'][:, :]
+        sensor2ego = mats_dict['sensor2ego_mats'][:, :, :3, :]
         bda = mats_dict['bda_mat'].view(batch_size, 1, 4, 4).repeat(1, num_cams, 1, 1)
 
         # If exporting, cache the MLP input, since it's based on 
@@ -286,21 +286,21 @@ class DepthNet(nn.Module):
                 [
                     torch.stack(
                         [
-                            intrins[:, ..., 0, 0],
-                            intrins[:, ..., 1, 1],
-                            intrins[:, ..., 0, 2],
-                            intrins[:, ..., 1, 2],
-                            ida[:, ..., 0, 0],
-                            ida[:, ..., 0, 1],
-                            ida[:, ..., 0, 3],
-                            ida[:, ..., 1, 0],
-                            ida[:, ..., 1, 1],
-                            ida[:, ..., 1, 3],
-                            bda[:, ..., 0, 0],
-                            bda[:, ..., 0, 1],
-                            bda[:, ..., 1, 0],
-                            bda[:, ..., 1, 1],
-                            bda[:, ..., 2, 2],
+                            intrins[:, :, 0, 0],
+                            intrins[:, :, 1, 1],
+                            intrins[:, :, 0, 2],
+                            intrins[:, :, 1, 2],
+                            ida[:, :, 0, 0],
+                            ida[:, :, 0, 1],
+                            ida[:, :, 0, 3],
+                            ida[:, :, 1, 0],
+                            ida[:, :, 1, 1],
+                            ida[:, :, 1, 3],
+                            bda[:, :, 0, 0],
+                            bda[:, :, 0, 1],
+                            bda[:, :, 1, 0],
+                            bda[:, :, 1, 1],
+                            bda[:, :, 2, 2],
                         ],
                         dim=-1,
                     ),
