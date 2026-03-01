@@ -264,6 +264,18 @@ def _fill_trainval_infos(nusc, train_scenes, val_scenes, test=False, max_sweeps=
                 sweeps.append(sweep)
                 sd_rec = nusc.get("sample_data", sd_rec["prev"])
             else:
+                if len(sweeps) == 0:
+                    sweeps.append(
+                        obtain_sensor2top(
+                            nusc,
+                            sd_rec["token"],
+                            l2e_t,
+                            l2e_r_mat,
+                            e2g_t,
+                            e2g_r_mat,
+                            "lidar",
+                        )
+                    )
                 break
         info["sweeps"] = sweeps
         # obtain annotation
