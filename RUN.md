@@ -84,13 +84,13 @@ For more details, see [train.py](https://github.com/rathaumons/bevfusion/blob/ma
     torchpack dist-run -np 1 python tools/train.py configs/nuscenes/seg/lidar-centerpoint-bev128.yaml
     ```
 
-  - Train the BEVFusion detection model (LiDAR version):
+  - Train the BEVFusion detection model (Camera + LiDAR):
 
     ```bash
     torchpack dist-run -np 1 python tools/train.py configs/nuscenes/det/transfusion/secfpn/camera+lidar/swint_v0p075/convfuser.yaml --model.encoders.camera.backbone.init_cfg.checkpoint pretrained/swint-nuimages-pretrained.pth --load_from pretrained/lidar-only-det.pth 
     ```
 
-  - Train the BEVFusion detection model (RADAR version):
+  - Train the BEVFusion detection model (Camera + RADAR):
 
     ```bash
     torchpack dist-run -np 1 python tools/train.py configs/nuscenes/det/centerhead/lssfpn/camera+radar/resnet50/dlss.yaml --model.encoders.camera.backbone.init_cfg.checkpoint pretrained/swint-nuimages-pretrained.pth
@@ -132,13 +132,13 @@ For more details, see [train.py](https://github.com/rathaumons/bevfusion/blob/ma
     torchpack dist-run -np 2 python tools/train.py configs/nuscenes/seg/lidar-centerpoint-bev128.yaml
     ```
   
-  - Train the BEVFusion detection model (LiDAR version):
+  - Train the BEVFusion detection model (Camera + LiDAR):
 
     ```bash
     torchpack dist-run -np 2 python tools/train.py configs/nuscenes/det/transfusion/secfpn/camera+lidar/swint_v0p075/convfuser.yaml --model.encoders.camera.backbone.init_cfg.checkpoint pretrained/swint-nuimages-pretrained.pth --load_from pretrained/lidar-only-det.pth 
     ```
 
-  - Train the BEVFusion detection model (RADAR version):
+  - Train the BEVFusion detection model (Camera + RADAR):
 
     ```bash
     torchpack dist-run -np 2 python tools/train.py configs/nuscenes/det/centerhead/lssfpn/camera+radar/resnet50/dlss.yaml --model.encoders.camera.backbone.init_cfg.checkpoint pretrained/swint-nuimages-pretrained.pth
