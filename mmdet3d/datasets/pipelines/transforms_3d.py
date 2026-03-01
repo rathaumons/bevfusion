@@ -56,7 +56,7 @@ class GTDepth:
                 ]
             )
         elif not torch.is_tensor(img):
-            img = torch.as_tensor(img)
+            img = torch.as_tensor(img, dtype=torch.float32)
 
         if self.keyframe_only:
             points = points[points[:, 4] == 0]
