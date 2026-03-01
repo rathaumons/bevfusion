@@ -16,6 +16,9 @@ def build_neck(cfg):
 
 
 def build_vtransform(cfg):
+    # Ensure all vtransform modules are imported and registered before build.
+    from . import vtransforms  # noqa: F401
+
     return VTRANSFORMS.build(cfg)
 
 

@@ -9,6 +9,24 @@ from mmdet3d.ops import bev_pool
 __all__ = ["BaseTransform", "BaseDepthTransform"]
 
 
+def _meta_to_tensor(metas, key, ref):
+    if metas is None:
+        return None
+    if isinstance(metas, dict):
+        value = metas.get(key)
+        if value is None:
+            return None
+        return torch.as_tensor(value, device=ref.device, dtype=ref.dtype)
+    if isinstance(metas, (list, tuple)):
+        values = []
+        for meta in metas:
+            if meta is None or key not in meta or meta[key] is None:
+                return None
+            values.append(torch.as_tensor(meta[key], device=ref.device, dtype=ref.dtype))
+        return torch.stack(values, dim=0)
+    return None
+
+
 def gen_dx_bx(xbound, ybound, zbound):
     dx = torch.Tensor([row[2] for row in [xbound, ybound, zbound]])
     bx = torch.Tensor([row[0] + row[2] / 2.0 for row in [xbound, ybound, zbound]])
@@ -179,6 +197,23 @@ class BaseTransform(nn.Module):
         *args,
         **kwargs,
     ):
+        if camera2ego is None:
+            camera2ego = _meta_to_tensor(metas, "camera2ego", img)
+        if lidar2ego is None:
+            lidar2ego = _meta_to_tensor(metas, "lidar2ego", img)
+        if lidar2camera is None:
+            lidar2camera = _meta_to_tensor(metas, "lidar2camera", img)
+        if lidar2image is None:
+            lidar2image = _meta_to_tensor(metas, "lidar2image", img)
+        if camera_intrinsics is None:
+            camera_intrinsics = _meta_to_tensor(metas, "camera_intrinsics", img)
+        if camera2lidar is None:
+            camera2lidar = _meta_to_tensor(metas, "camera2lidar", img)
+        if img_aug_matrix is None:
+            img_aug_matrix = _meta_to_tensor(metas, "img_aug_matrix", img)
+        if lidar_aug_matrix is None:
+            lidar_aug_matrix = _meta_to_tensor(metas, "lidar_aug_matrix", img)
+
         rots = camera2ego[..., :3, :3]
         trans = camera2ego[..., :3, 3]
         intrins = camera_intrinsics[..., :3, :3]
@@ -225,6 +260,23 @@ class BaseDepthTransform(BaseTransform):
         *args,
         **kwargs,
     ):
+        if sensor2ego is None:
+            sensor2ego = _meta_to_tensor(metas, "camera2ego", img)
+        if lidar2ego is None:
+            lidar2ego = _meta_to_tensor(metas, "lidar2ego", img)
+        if lidar2camera is None:
+            lidar2camera = _meta_to_tensor(metas, "lidar2camera", img)
+        if lidar2image is None:
+            lidar2image = _meta_to_tensor(metas, "lidar2image", img)
+        if cam_intrinsic is None:
+            cam_intrinsic = _meta_to_tensor(metas, "camera_intrinsics", img)
+        if camera2lidar is None:
+            camera2lidar = _meta_to_tensor(metas, "camera2lidar", img)
+        if img_aug_matrix is None:
+            img_aug_matrix = _meta_to_tensor(metas, "img_aug_matrix", img)
+        if lidar_aug_matrix is None:
+            lidar_aug_matrix = _meta_to_tensor(metas, "lidar_aug_matrix", img)
+
         rots = sensor2ego[..., :3, :3]
         trans = sensor2ego[..., :3, 3]
         intrins = cam_intrinsic[..., :3, :3]
