@@ -50,10 +50,8 @@ class GTDepth:
         img = _unwrap(data["img"])
         if isinstance(img, (list, tuple)):
             img = torch.stack([torch.as_tensor(im, dtype=torch.float32) for im in img])
-        elif not torch.is_tensor(img):
-            img = torch.as_tensor(img, dtype=torch.float32)
         else:
-            img = img.float()
+            img = torch.as_tensor(img, dtype=torch.float32)
         data["img"] = img
 
         if self.keyframe_only:
