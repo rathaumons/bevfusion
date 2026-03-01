@@ -1,4 +1,3 @@
-import inspect
 from typing import Tuple
 
 from mmcv.runner import force_fp32
@@ -9,10 +8,6 @@ from mmdet3d.models.builder import VTRANSFORMS
 from .base import BaseTransform
 
 __all__ = ["LSSTransform"]
-# Exclude `self`; used to keep compatibility with BaseTransform.forward signatures.
-BASE_FORWARD_POSITIONAL_ARG_COUNT = (
-    len(inspect.signature(BaseTransform.forward).parameters) - 1
-)
 
 
 @VTRANSFORMS.register_module()
@@ -78,9 +73,6 @@ class LSSTransform(BaseTransform):
         return x
 
     def forward(self, *args, **kwargs):
-        # Drop trailing positional extras when callers provide more args than base accepts.
-        if len(args) > BASE_FORWARD_POSITIONAL_ARG_COUNT:
-            args = args[:BASE_FORWARD_POSITIONAL_ARG_COUNT]
         x = super().forward(*args, **kwargs)
         x = self.downsample(x)
         return x
