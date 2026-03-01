@@ -31,10 +31,12 @@ class GTDepth:
         def _unwrap(x):
             return getattr(x, "data", x)
 
-        def _to_tensor(x):
+        def _to_tensor(x, dtype=None):
             x = _unwrap(x)
             x = getattr(x, "tensor", x)
-            return x if torch.is_tensor(x) else torch.as_tensor(x, dtype=torch.float32)
+            if torch.is_tensor(x):
+                return x if dtype is None else x.to(dtype=dtype)
+            return torch.as_tensor(x, dtype=dtype)
 
         sensor2ego = _to_tensor(data["camera2ego"])
         cam_intrinsic = _to_tensor(data["camera_intrinsics"])
@@ -44,19 +46,14 @@ class GTDepth:
         camera2lidar = _to_tensor(data["camera2lidar"])
         lidar2image = _to_tensor(data["lidar2image"])
 
-        points = _to_tensor(data["points"])
+        points = _to_tensor(data["points"], dtype=torch.float32)
         img = _unwrap(data["img"])
         if isinstance(img, (list, tuple)):
-            img = torch.stack(
-                [
-                    im
-                    if torch.is_tensor(im)
-                    else torch.as_tensor(im, dtype=torch.float32)
-                    for im in img
-                ]
-            )
+            img = torch.stack([torch.as_tensor(im, dtype=torch.float32) for im in img])
         elif not torch.is_tensor(img):
             img = torch.as_tensor(img, dtype=torch.float32)
+        else:
+            img = img.float()
 
         if self.keyframe_only:
             points = points[points[:, 4] == 0]
