@@ -232,9 +232,9 @@ def _fill_trainval_infos(nusc,
         ]
         for cam in camera_types:
             cam_token = sample['data'][cam]
-            cam_path, _, cam_intrinsic = nusc.get_sample_data(cam_token)
+            cam_path, _, camera_intrinsics = nusc.get_sample_data(cam_token)
             cam_info = obtain_sensor2top(nusc, cam_token, l2e_t, l2e_r_mat, e2g_t, e2g_r_mat, cam)
-            cam_info.update(cam_intrinsic=cam_intrinsic)
+            cam_info.update(camera_intrinsics=camera_intrinsics)
             info['cams'].update({cam: cam_info})
 
         radar_names = ['RADAR_FRONT', 'RADAR_FRONT_LEFT', 'RADAR_FRONT_RIGHT',  'RADAR_BACK_LEFT', 'RADAR_BACK_RIGHT']
@@ -423,7 +423,7 @@ def export_2d_annotation(root_path, info_path, version, mono3d=True):
                     cam2ego_translation=cam_info['sensor2ego_translation'],
                     ego2global_rotation=info['ego2global_rotation'],
                     ego2global_translation=info['ego2global_translation'],
-                    cam_intrinsic=cam_info['cam_intrinsic'],
+                    camera_intrinsics=cam_info['camera_intrinsics'],
                     width=width,
                     height=height
                 )
