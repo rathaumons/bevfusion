@@ -1,5 +1,4 @@
 radar_sweeps: 6
-radar_max_points: 2500
 radar_use_dims: [0, 1, 2, 5, 8, 9, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56]
 radar_compensate_velocity: true 
 radar_filtering: none
@@ -42,7 +41,6 @@ train_pipeline:
     load_dim: 18
     sweeps_num: ${radar_sweeps}
     use_dim: ${radar_use_dims}
-    max_num: ${radar_max_points}
     compensate_velocity: ${radar_compensate_velocity}
     filtering: ${radar_filtering}
     normalize: ${radar_normalize}
@@ -180,7 +178,6 @@ test_pipeline:
     load_dim: 18
     sweeps_num: ${radar_sweeps}
     use_dim: ${radar_use_dims}
-    max_num: ${radar_max_points}
     compensate_velocity: ${radar_compensate_velocity}
     filtering: ${radar_filtering}
     normalize: ${radar_normalize}

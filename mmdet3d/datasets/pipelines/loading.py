@@ -597,7 +597,6 @@ class LoadRadarPointsMultiSweeps(object):
                  use_dim=[0, 1, 2, 3, 4],
                  sweeps_num=3, 
                  file_client_args=dict(backend='disk'),
-                 max_num=300,
                  pc_range=[-51.2, -51.2, -5.0, 51.2, 51.2, 3.0], 
                  compensate_velocity=False, 
                  normalize_dims=[(3, 0, 50), (4, -100, 100), (5, -100, 100)], 
@@ -609,7 +608,6 @@ class LoadRadarPointsMultiSweeps(object):
         self.sweeps_num = sweeps_num
         self.file_client_args = file_client_args.copy()
         self.file_client = None
-        self.max_num = max_num
         self.test_mode = test_mode
         self.pc_range = pc_range
         self.compensate_velocity = compensate_velocity
@@ -676,37 +674,6 @@ class LoadRadarPointsMultiSweeps(object):
 
         return points.transpose().astype(np.float32)
         
-
-    def _pad_or_drop(self, points):
-        '''
-        points: [N, 18]
-        '''
-
-        num_points = points.shape[0]
-
-        if num_points == self.max_num:
-            masks = np.ones((num_points, 1), 
-                        dtype=points.dtype)
-
-            return points, masks
-        
-        if num_points > self.max_num:
-            points = np.random.permutation(points)[:self.max_num, :]
-            masks = np.ones((self.max_num, 1), 
-                        dtype=points.dtype)
-            
-            return points, masks
-
-        if num_points < self.max_num:
-            zeros = np.zeros((self.max_num - num_points, points.shape[1]), 
-                        dtype=points.dtype)
-            masks = np.ones((num_points, 1), 
-                        dtype=points.dtype)
-            
-            points = np.concatenate((points, zeros), axis=0)
-            masks = np.concatenate((masks, zeros.copy()[:, [0]]), axis=0)
-
-            return points, masks
 
     def normalize_feats(self, points, normalize_dims):
         for dim, min, max in normalize_dims:
