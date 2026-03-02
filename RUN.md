@@ -14,10 +14,16 @@ For more details, see [test.py](https://github.com/rathaumons/bevfusion/blob/mai
 
   <details><summary>Show more details</summary>
 
-  - Evaluate the detection model:
+  - Evaluate the detection model (Camera + LiDAR):
 
     ```bash
     torchpack dist-run -np 1 python tools/test.py configs/nuscenes/det/transfusion/secfpn/camera+lidar/swint_v0p075/convfuser.yaml pretrained/bevfusion-det.pth --eval bbox
+    ```
+
+  - Evaluate the detection model (Camera + RADAR):
+
+    ```bash
+    torchpack dist-run -np 1 python tools/test.py configs/nuscenes/det/centerhead/lssfpn/camera+radar/resnet50/dlss.yaml pretrained/bevfusion-det-radar.pth --eval bbox
     ```
 
   - Evaluate the segmentation model:
@@ -32,10 +38,16 @@ For more details, see [test.py](https://github.com/rathaumons/bevfusion/blob/mai
 
   <details><summary>Show more details</summary>
 
-  - Evaluate the detection model:
+  - Evaluate the detection model (Camera + LiDAR):
 
     ```bash
     torchpack dist-run -np 2 python tools/test.py configs/nuscenes/det/transfusion/secfpn/camera+lidar/swint_v0p075/convfuser.yaml pretrained/bevfusion-det.pth --eval bbox
+    ```
+
+  - Evaluate the detection model (Camera + RADAR):
+
+    ```bash
+    torchpack dist-run -np 2 python tools/test.py configs/nuscenes/det/centerhead/lssfpn/camera+radar/resnet50/dlss.yaml pretrained/bevfusion-det-radar.pth --eval bbox
     ```
 
   - Evaluate the segmentation model:
