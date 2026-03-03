@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 SHELL ["/bin/bash", "-lc"]
@@ -28,7 +28,7 @@ RUN source /root/miniconda3/bin/activate && \
     conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
     conda update --all -y && \
     conda deactivate || true && \
-    conda create -n bevfusion python=3.9 -y
+    conda create -n bevfusion python=3.11 -y
 
 # Auto-activate conda env in interactive shells
 RUN cat <<'EOF' >> /root/.bashrc
@@ -50,11 +50,11 @@ RUN dos2unix /root/.bashrc
 # Base Python requirements
 # ------------------------------------------------------------
 RUN source /root/miniconda3/bin/activate bevfusion && \
-    pip install -U pip wheel setuptools==59.5.0 && \
-    pip install numpy==1.23.5 "opencv-python<4.6"
+    pip install -U pip wheel "setuptools<82" && \
+    pip install numpy==1.26.4 opencv-python==4.11.0.86
 
 RUN source /root/miniconda3/bin/activate bevfusion && \
-    pip install torch==1.10.2 torchvision==0.11.3 --index-url https://download.pytorch.org/whl/cu113
+    pip install torch==2.2.2 torchvision==0.17.2 --index-url https://download.pytorch.org/whl/cu121
 
 # ------------------------------------------------------------
 # Global ENV
@@ -73,58 +73,64 @@ ENV OMPI_MCA_plm=isolated
 ENV OMPI_MCA_plm_rsh_agent=sh
 
 # ------------------------------------------------------------
-# OpenMPI 4.0.4 with CUDA
+# OpenMPI 4.0.7 with CUDA
 # ------------------------------------------------------------
 
 # Intall
 RUN source /root/miniconda3/bin/activate bevfusion && \
     cd /root && \
-    wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.4.tar.gz && \
-    tar -xvf openmpi-4.0.4.tar.gz && \
-    cd openmpi-4.0.4 && \
+    wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.7.tar.gz && \
+    tar -xvf openmpi-4.0.7.tar.gz && \
+    cd openmpi-4.0.7 && \
     ./configure --prefix="$HOME/.openmpi" --with-cuda=/usr/local/cuda && \
     make -j"$(nproc)" && \
     make install
 
 # ------------------------------------------------------------
-# MMCV 1.4.0 with CUDA
+# MMCV 1.7.3 with CUDA
 # ------------------------------------------------------------
 
 # Force CUDA
 # For compute capability, see: 
 # https://developer.nvidia.com/cuda/gpus
-ARG TORCH_CUDA_ARCH_LIST="7.5;8.6"
+ARG TORCH_CUDA_ARCH_LIST="8.6;8.9"
 ENV FORCE_CUDA="1"
 ENV TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}"
 
 # Install
 RUN source /root/miniconda3/bin/activate bevfusion && \
     cd /root && \
-    wget -O mmcv-1.4.0.tar.gz https://github.com/open-mmlab/mmcv/archive/refs/tags/v1.4.0.tar.gz && \
-    tar -xvf mmcv-1.4.0.tar.gz && \
-    cd mmcv-1.4.0 && \
-    MAKEFLAGS="-j$(nproc)" MMCV_WITH_OPS=1 pip install -e . -v
+    wget -O mmcv-1.7.3.tar.gz https://github.com/rathaROG/mmcv/archive/refs/tags/v1.7.3.tar.gz && \
+    tar -xvf mmcv-1.7.3.tar.gz && \
+    cd mmcv-1.7.3 && \
+    MAKEFLAGS="-j$(nproc)" MMCV_WITH_OPS=1 pip install -e . --no-build-isolation -v
 
 # ------------------------------------------------------------
 # Other Python requirements
 # ------------------------------------------------------------
 RUN source /root/miniconda3/bin/activate bevfusion && \
     pip install \
-        Pillow==8.4.0 \
-        tqdm \
-        git+https://github.com/rathaumons/torchpack.git \
-        mmdet==2.20.0 \
+        psutil==7.2.2 \
+        Pillow==9.5.0 \
+        tqdm==4.67.3 \
+        git+https://github.com/rathaumons/torchpack.git@06ece33272a6d74f77c383e3bfd52ef4614487d9 \
+        mmdet==2.28.2 \
         nuscenes-devkit==1.1.11 \
-        numba \
-        flash-attn==1.0.9 \
+        numba==0.64.0 \
         yapf==0.40.1 \
-        mpi4py==3.0.3 \
-        future \
-        tensorboard \
-        cumm-cu113 \
-        spconv-cu113 \
-        numpy==1.23.5 \
-        "opencv-python<4.6"
+        mpi4py==4.1.1 \
+        future==1.0.0 \
+        tensorboard==2.20.0 \
+        cumm-cu121==0.8.2 \
+        spconv-cu121==2.3.8 \
+        numpy==1.26.4 \
+        opencv-python==4.11.0.86
+
+RUN source /root/miniconda3/bin/activate bevfusion && \
+    pip install --no-build-isolation flash-attn==1.0.9
+
+RUN source /root/miniconda3/bin/activate bevfusion && \
+    pip install setuptools==59.5.0
 
 # ------------------------------------------------------------
 # Cleanup
@@ -136,8 +142,8 @@ RUN source /root/miniconda3/bin/activate bevfusion && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/* /var/tmp/* && \
     rm -rf /root/.cache/* && \
-    rm -rf /root/openmpi-4.0.4.tar.gz && \
-    rm -rf /root/mmcv-1.4.0.tar.gz
+    rm -rf /root/openmpi-4.0.7.tar.gz && \
+    rm -rf /root/mmcv-1.7.3.tar.gz
 
 WORKDIR /workspace
 CMD ["bash"]
