@@ -181,7 +181,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
 - Install `opencv-python` and `numpy`:
 
   ```bash
-  pip install -U pip wheel setuptools==59.5.0  # MUST DO !!!
+  pip install -U wheel setuptools==59.5.0 "pip<23"  # MUST DO !!!
   pip install numpy==1.23.5 "opencv-python<4.6"
   ```
 
