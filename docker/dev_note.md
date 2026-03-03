@@ -13,6 +13,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
   <details><summary>Show more details</summary>
 
   - Enable [KVM](https://docs.docker.com/desktop/setup/install/linux/#kvm-virtualization-support):
+
     ```bash
     # install cpu-checker
     sudo apt-get install -y cpu-checker
@@ -35,6 +36,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
     ```
 
   - Install [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html):
+
     ```bash
     # install requirements
     sudo apt-get update && sudo apt-get install -y --no-install-recommends \
@@ -57,6 +59,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
     ```
 
   - Install [Docker CE](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository):
+
     ```bash
     # add GPG key
     sudo apt-get update
@@ -84,6 +87,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
     ```
 
   - If docker fails to run, check [this](https://docs.docker.com/engine/install/linux-postinstall) or:
+
     ```bash
     sudo usermod -aG docker $USER
     sudo reboot
@@ -94,11 +98,13 @@ This file contains the original, fully-tested manual steps used to build the BEV
 ## Create a container for BEVFusion
 
 - Pull the [official NVIDIA CUDA 12.1.0](https://gitlab.com/nvidia/container-images/cuda/blob/master/doc/unsupported-tags.md#cuda-1210-1) on host:
+
   ```bash
   docker pull nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
   ```
 
 - Create and run `bev-train` container with a mounted workspace `home/$USER/docker/bev_train:/workspace`:
+
   ```bash
   docker run --gpus all -it \
       --name bev-train \
@@ -113,6 +119,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
   <details><summary>Show more details</summary>
 
   - Check the packages:
+
     ```bash
     apt list --installed
     nvcc --version
@@ -121,12 +128,14 @@ This file contains the original, fully-tested manual steps used to build the BEV
     ```
 
   - Install necessary packages:
+
     ```bash
     apt-get update
     apt-get install -y wget git libgl1 libglib2.0-0
     ```
 
   - Install [miniconda](https://www.anaconda.com/docs/getting-started/miniconda/install#linux-2):
+
     ```bash
     cd ~
     mkdir -p ~/miniconda3
@@ -139,12 +148,14 @@ This file contains the original, fully-tested manual steps used to build the BEV
     ```
 
   - Create a Python 3.9 environment call `bevfusion`:
+
     ```bash
     conda deactivate
     conda create -n bevfusion python=3.11 -y
     ```
 
   - Add to `.bashrc` using [VS Code](https://code.visualstudio.com/download) from host:
+
     ```bash
     if [ -f "/root/miniconda3/bin/activate" ]; then
         source /root/miniconda3/bin/activate
@@ -161,18 +172,21 @@ This file contains the original, fully-tested manual steps used to build the BEV
 ## Install requirements
 
 - Enter the container `bev-train` from host:
+
   ```bash
   docker restart bev-train
   docker exec -it bev-train bash
   ```
 
 - Install `opencv-python` and `numpy`:
+
   ```
   pip install -U pip wheel "setuptools<82"
   pip install numpy==1.26.4 "opencv-python<4.12"
   ```
 
 - Install [PyTorch](https://pytorch.org/) 2.2.2 + CUDA 12.1 (Max support: `compute_90`, `sm_90`):
+
   ```bash
   pip install torch==2.2.2 torchvision==0.17.2 --index-url https://download.pytorch.org/whl/cu121
   ```
@@ -182,6 +196,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
   <details><summary>Show more details</summary>
 
   - Clone source:
+
     ```bash
     cd ~
     wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.7.tar.gz
@@ -189,18 +204,21 @@ This file contains the original, fully-tested manual steps used to build the BEV
     ```
 
   - Config cmake with CUDA:
+
     ```bash
     cd openmpi-4.0.7
     ./configure --prefix="$HOME/.openmpi" --with-cuda=/usr/local/cuda
     ```
 
   - Build and install:
+
     ```bash
     make -j$(nproc)
     make install
     ```
 
   - Add environment variables in `.bashrc`:
+
     ```bash
     export OPENMPI_HOME="$HOME/.openmpi"
     if [ -d "$OPENMPI_HOME" ]; then
@@ -212,6 +230,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
     ```
 
   - Quick test:
+
     ```bash
     ompi_info
     ```
@@ -223,6 +242,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
   <details><summary>Show more details</summary>
 
   - Clone source:
+
     ```bash
     cd ~
     wget -O https://github.com/rathaROG/mmcv/archive/refs/tags/v1.7.3.tar.gz
@@ -230,12 +250,14 @@ This file contains the original, fully-tested manual steps used to build the BEV
     ```
 
   - Config cmake, build, and install:
+
     ```bash
     cd mmcv-1.7.3
     MAKEFLAGS="-j$(nproc)" MMCV_WITH_OPS=1 pip install -e . --no-build-isolation -v
     ```
 
   - Quick test:
+
     ```bash
     python -W ignore -c "import mmcv"
     python -W ignore .dev_scripts/check_installation.py
@@ -244,6 +266,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
   </details>
 
 - Install other required Python packages:
+
   ```bash
   pip install \
       psutil \
@@ -264,6 +287,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
   ```
 
 - Install `flash-attn==1.0.9` and `setuptools==59.5.0`:
+
   ```bash
   pip install --no-build-isolation flash-attn==1.0.9
   pip install setuptools==59.5.0
@@ -272,12 +296,14 @@ This file contains the original, fully-tested manual steps used to build the BEV
 ## Export docker image
 
 - Enter the container `bev-train` from host:
+
   ```bash
   docker restart bev-train
   docker exec -it bev-train bash
   ```
 
 - Clean inside the running container:
+
   ```bash
   cd ~
   pip cache purge && \
@@ -289,6 +315,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
   ```
 
 - Export to `bev_train_2026.tar` from host:
+
   ```bash
   docker commit bev-train bev-train:latest
   docker save -o bev_train_2026.tar bev-train:latest
@@ -300,12 +327,14 @@ This file contains the original, fully-tested manual steps used to build the BEV
 - Install Docker on host -> See [[Prepare prerequisites](#prepare-prerequisites)]
 
 - Import from `bev_train_2026.tar` in host:
+
   ```bash
   sha256sum -c bev_train_2026.tar.sha256
   docker load -i bev_train_2026.tar
   ```
 
 - Start the container with a mounted workspace `home/$USER/docker/bev_train:/workspace`:
+
   ```bash
   docker run --gpus all -it \
       --name bev-train \
@@ -318,12 +347,14 @@ This file contains the original, fully-tested manual steps used to build the BEV
 ## BEVFusion: Build and run
 
 - Enter the container from host:
+
   ```bash
   docker restart bev-train
   docker exec -it bev-train bash
   ```
 
 - Clone and build `bevfusion` inside the running container:
+
   ```bash
   cd /workspace
   git clone https://github.com/rathaumons/bevfusionx.git
