@@ -112,7 +112,7 @@ RUN source /root/miniconda3/bin/activate bevfusion && \
         "Pillow<10" \
         tqdm \
         git+https://github.com/rathaumons/torchpack.git \
-        mmdet==2.20.0 \
+        "mmdet<3" \
         nuscenes-devkit==1.1.11 \
         numba \
         yapf==0.40.1 \
