@@ -1,4 +1,4 @@
-# DEV NOTE 20260304 (CUDA 12.1)
+# DEV NOTE 20260304 (CUDA 12.6)
 
 This file contains the original, fully-tested manual steps used to build the BEVFusion training environment interactively inside a container.
 
@@ -97,10 +97,10 @@ This file contains the original, fully-tested manual steps used to build the BEV
 
 ## Create a container for BEVFusion
 
-- Pull the [official NVIDIA CUDA 12.1.0](https://gitlab.com/nvidia/container-images/cuda/blob/master/doc/unsupported-tags.md#cuda-1210-1) on host:
+- Pull the [official NVIDIA CUDA 12.6.2](https://gitlab.com/nvidia/container-images/cuda/blob/master/doc/unsupported-tags.md#cuda-1262-2) on host:
 
   ```bash
-  docker pull nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
+  docker pull nvidia/cuda:12.6.2-cudnn-devel-ubuntu20.04
   ```
 
 - Create and run `bev-train` container with a mounted workspace `home/$USER/docker/bev_train:/workspace`:
@@ -110,7 +110,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
       --name bev-train \
       --shm-size=32g \
       -v /home/$USER/docker/bev_train:/workspace \
-      nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04 \
+      nvidia/cuda:12.6.2-cudnn-devel-ubuntu20.04 \
       bash
   ```
 
@@ -185,10 +185,10 @@ This file contains the original, fully-tested manual steps used to build the BEV
   pip install numpy==1.26.4 "opencv-python<4.12"
   ```
 
-- Install [PyTorch](https://pytorch.org/) 2.2.2 + CUDA 12.1 (Max support: `compute_90`, `sm_90`):
+- Install [PyTorch](https://pytorch.org/) 2.10.0 + CUDA 12.6 (Max support: `compute_90`, `sm_90`):
 
   ```bash
-  pip install torch==2.2.2 torchvision==0.17.2 --index-url https://download.pytorch.org/whl/cu121
+  pip install torch==2.10.0 torchvision==0.25.0 --index-url https://download.pytorch.org/whl/cu126
   ```
 
 - Install [OpenMPI v4.0.7](https://www.open-mpi.org/software/ompi/v4.0/) with CUDA:
@@ -280,8 +280,8 @@ This file contains the original, fully-tested manual steps used to build the BEV
       mpi4py \
       future \
       tensorboard \
-      cumm-cu121 \
-      spconv-cu121 \
+      cumm-cu126 \
+      spconv-cu126 \
       numpy==1.26.4 \
       "opencv-python<4.12"
   ```
@@ -359,7 +359,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
   cd /workspace
   git clone https://github.com/rathaumons/bevfusionx.git
   cd bevfusion
-  git checkout cu121
+  git checkout cu126
   python setup.py develop
   pip list
   ```
