@@ -2,8 +2,6 @@ import argparse
 import time
 import torch
 
-import dirty_patches
-
 from mmcv import Config
 from mmcv.parallel import MMDataParallel
 from mmcv.runner import load_checkpoint, wrap_fp16_model
