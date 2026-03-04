@@ -2,8 +2,6 @@ import argparse
 import copy
 import os
 
-import dirty_patches
-
 import mmcv
 import numpy as np
 import torch
