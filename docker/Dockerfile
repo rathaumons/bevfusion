@@ -102,7 +102,7 @@ RUN source /root/miniconda3/bin/activate bevfusion && \
     wget -O mmcv.tar.gz https://github.com/rathaROG/mmcv/archive/refs/tags/${MMCV_REF}.tar.gz && \
     mkdir -p mmcv && tar -xzf mmcv.tar.gz --strip-components=1 -C mmcv && \
     cd mmcv && \
-    MAKEFLAGS="-j$(nproc)" MMCV_WITH_OPS=1 pip install -e . -v
+    MAKEFLAGS="-j$(nproc)" MMCV_WITH_OPS=1 pip install -e . --no-build-isolation -v
 
 # ------------------------------------------------------------
 # Other Python requirements
