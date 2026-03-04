@@ -110,7 +110,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
       --name bev-train \
       --shm-size=32g \
       -v /home/$USER/docker/bev_train:/workspace \
-      nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04 \
+      nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04 \
       bash
   ```
 
