@@ -4,8 +4,6 @@ import os
 import random
 import time
 
-import dirty_patches
-
 import numpy as np
 import torch
 from mmcv import Config
