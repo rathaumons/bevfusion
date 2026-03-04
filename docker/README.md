@@ -100,7 +100,7 @@ For the original fully manual, step-by-step dev notes, see: [`dev_note.md`](dev_
   <details><summary>Show more details</summary>
 
   ```bash
-  cd /root/mmcv-1.7.3
+  cd /root/mmcv
 
   # Check if MMCV has CUDA support
   python -W ignore -c "import mmcv"
