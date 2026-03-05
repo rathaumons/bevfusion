@@ -1,4 +1,4 @@
-# DEV NOTE 20260304 (CUDA 12.1)
+# DEV NOTE 20260305 (CUDA 12.1)
 
 This file contains the original, fully-tested manual steps used to build the BEVFusion training environment interactively inside a container.
 
@@ -103,18 +103,18 @@ This file contains the original, fully-tested manual steps used to build the BEV
   docker pull nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
   ```
 
-- Create and run `bev-train` container with a mounted workspace `home/$USER/docker/bev_train:/workspace`:
+- Create and run `bev-train-cu121` container with a mounted workspace `home/$USER/docker/bev_train_cu121:/workspace`:
 
   ```bash
   docker run --gpus all -it \
-      --name bev-train \
+      --name bev-train-cu121 \
       --shm-size=32g \
-      -v /home/$USER/docker/bev_train:/workspace \
+      -v /home/$USER/docker/bev_train_cu121:/workspace \
       nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04 \
       bash
   ```
 
-- Install all necessary packages and miniconda inside the running container `bev-train`:
+- Install all necessary packages and miniconda inside the running container `bev-train-cu121`:
 
   <details><summary>Show more details</summary>
 
@@ -171,11 +171,11 @@ This file contains the original, fully-tested manual steps used to build the BEV
 
 ## Install requirements
 
-- Enter the container `bev-train` from host:
+- Enter the container `bev-train-cu121` from host:
 
   ```bash
-  docker restart bev-train
-  docker exec -it bev-train bash
+  docker restart bev-train-cu121
+  docker exec -it bev-train-cu121 bash
   ```
 
 - Install `opencv-python` and `numpy`:
@@ -295,11 +295,11 @@ This file contains the original, fully-tested manual steps used to build the BEV
 
 ## Export docker image
 
-- Enter the container `bev-train` from host:
+- Enter the container `bev-train-cu121` from host:
 
   ```bash
-  docker restart bev-train
-  docker exec -it bev-train bash
+  docker restart bev-train-cu121
+  docker exec -it bev-train-cu121 bash
   ```
 
 - Clean inside the running container:
@@ -314,33 +314,33 @@ This file contains the original, fully-tested manual steps used to build the BEV
   rm -rf ~/.cache/*
   ```
 
-- Export to `bev_train_2026.tar` from host:
+- Export to `bev_train_cu121_2026.tar` from host:
 
   ```bash
-  docker commit bev-train bev-train:latest
-  docker save -o bev_train_2026.tar bev-train:latest
-  sha256sum bev_train_2026.tar > bev_train_2026.tar.sha256
+  docker commit bev-train-cu121 bev-train:cu121
+  docker save -o bev_train_cu121_2026.tar bev-train:cu121
+  sha256sum bev_train_cu121_2026.tar > bev_train_cu121_2026.tar.sha256
   ```
 
 ## Import docker image
 
 - Install Docker on host -> See [[Prepare prerequisites](#prepare-prerequisites)]
 
-- Import from `bev_train_2026.tar` in host:
+- Import from `bev_train_cu121_2026.tar` in host:
 
   ```bash
-  sha256sum -c bev_train_2026.tar.sha256
-  docker load -i bev_train_2026.tar
+  sha256sum -c bev_train_cu121_2026.tar.sha256
+  docker load -i bev_train_cu121_2026.tar
   ```
 
-- Start the container with a mounted workspace `home/$USER/docker/bev_train:/workspace`:
+- Start the container with a mounted workspace `home/$USER/docker/bev_train_cu121:/workspace`:
 
   ```bash
   docker run --gpus all -it \
-      --name bev-train \
+      --name bev-train-cu121 \
       --shm-size=32g \
-      -v /home/$USER/docker/bev_train:/workspace \
-      bev-train:latest \
+      -v /home/$USER/docker/bev_train_cu121:/workspace \
+      bev-train:cu121 \
       bash
   ```
 
@@ -349,8 +349,8 @@ This file contains the original, fully-tested manual steps used to build the BEV
 - Enter the container from host:
 
   ```bash
-  docker restart bev-train
-  docker exec -it bev-train bash
+  docker restart bev-train-cu121
+  docker exec -it bev-train-cu121 bash
   ```
 
 - Clone and build `bevfusion` inside the running container:
