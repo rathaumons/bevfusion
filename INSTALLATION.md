@@ -2,7 +2,7 @@
 
 This guide walks you through installing the project directly on your machine. If you have newer‑generation hardware or prefer an isolated, reproducible environment, you can instead use Docker.
 
-👉 For [CUDA 11.3](https://github.com/rathaumons/bevfusionx/blob/main/INSTALLATION.md) | [Docker 🐳](https://github.com/rathaumons/bevfusionx/tree/main/docker)
+👉 For [CUDA 11.3](https://github.com/rathaumons/bevfusionx/blob/cu113/INSTALLATION.md) | [Docker 🐳](https://github.com/rathaumons/bevfusionx/tree/cu113/docker)
 
 ✅ **For [CUDA 12.1](https://github.com/rathaumons/bevfusionx/blob/cu121/INSTALLATION.md) | [Docker 🐳](https://github.com/rathaumons/bevfusionx/tree/cu121/docker)**
 
