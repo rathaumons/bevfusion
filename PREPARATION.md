@@ -4,7 +4,7 @@
 
 - For nuScenes dataset:
 
-  - Default path [`bevfusion/data/nuscenes`](./data/nuscenes):
+  - Default path [`bevfusionx/data/nuscenes`](./data/nuscenes):
 
     ```
     bevfusion
