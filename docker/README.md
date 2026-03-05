@@ -51,7 +51,7 @@ For the original fully manual, step-by-step dev notes, see: [`dev_note.md`](dev_
   docker run --gpus all -it \
       --name bev-train-cu121 \
       --shm-size=32g \
-      -v /home/$USER/docker/bev_train:/workspace \
+      -v /home/$USER/docker/bev_train_cu121:/workspace \
       bev-train:cu121 \
       bash
   ```
