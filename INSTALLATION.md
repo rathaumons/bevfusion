@@ -6,15 +6,15 @@ This guide walks you through installing the project directly on your machine. If
 
 👉 For [CUDA 12.1](https://github.com/rathaumons/bevfusionx/blob/cu121/INSTALLATION.md) | [Docker 🐳](https://github.com/rathaumons/bevfusionx/tree/cu121/docker)
 
-✅ **For [CUDA 12.6](https://github.com/rathaumons/bevfusionx/blob/cu126/INSTALLATION.md) | [Docker 🐳](https://github.com/rathaumons/bevfusionx/tree/cu126/docker)**
+👉 For [CUDA 12.6](https://github.com/rathaumons/bevfusionx/blob/cu126/INSTALLATION.md) | [Docker 🐳](https://github.com/rathaumons/bevfusionx/tree/cu126/docker)
 
-👉 For [CUDA 12.8](https://github.com/rathaumons/bevfusionx/blob/cu128/INSTALLATION.md) | [Docker 🐳](https://github.com/rathaumons/bevfusionx/tree/cu128/docker)
+✅ **For [CUDA 12.8](https://github.com/rathaumons/bevfusionx/blob/cu128/INSTALLATION.md) | [Docker 🐳](https://github.com/rathaumons/bevfusionx/tree/cu128/docker)**
 
 ## Prepare prerequisites
 
 - Only Linux
 - Only gcc/g++ 9; otherwise, errors will occur later in some builds.
-- Only [CUDA 12.6](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/) & [cuDNN 9.x](https://docs.nvidia.com/deeplearning/cudnn/latest/installation/linux.html)
+- Only [CUDA 12.8](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/) & [cuDNN 9.x](https://docs.nvidia.com/deeplearning/cudnn/latest/installation/linux.html)
 - Only Python 3.11 -> `conda create --name bevfusion python=3.11`
 
 ## Install requirements and build
@@ -32,14 +32,14 @@ This guide walks you through installing the project directly on your machine. If
   pip install numpy==1.26.4 "opencv-python<4.12"
   ```
 
-- Install [PyTorch](https://pytorch.org/) 2.10.0 + CUDA 12.6 (Max support: `compute_90`, `sm_90`):
+- Install [PyTorch](https://pytorch.org/) 2.10.0 + CUDA 12.6 (Max support: `compute_120`, `sm_120`):
 
   <details><summary>Show more details</summary>
 
   - pip (recommended):
 
     ```bash
-    pip install torch==2.10.0 torchvision==0.25.0 --index-url https://download.pytorch.org/whl/cu126
+    pip install torch==2.10.0 torchvision==0.25.0 --index-url https://download.pytorch.org/whl/cu128
     ```
 
   </details>
@@ -104,7 +104,7 @@ This guide walks you through installing the project directly on your machine. If
 
     ```bash
     cd mmcv
-    # export TORCH_CUDA_ARCH_LIST="8.6;8.9"  # optional for direct install
+    # export TORCH_CUDA_ARCH_LIST="8.6;8.9;12.0"  # optional for direct install
     MAKEFLAGS="-j$(nproc)" MMCV_WITH_OPS=1 FORCE_CUDA=1 pip install -e . --no-build-isolation -v
     ```
 
@@ -123,8 +123,19 @@ This guide walks you through installing the project directly on your machine. If
   cd ~  # or choose your preferred location
   git clone https://github.com/rathaumons/bevfusionx.git
   cd bevfusion
-  git checkout cu126  # IMPORTANT !!!
+  git checkout cu128  # IMPORTANT !!!
   pip install -r requirements.txt
+  ```
+
+- Install custom [`cumm`](https://github.com/FindDefinition/cumm.git) and [`spconv`](https://github.com/traveller59/spconv.git) with CUDA 12.8:
+
+  ```bash
+  export CUMM_CUDA_VERSION="12.8"
+  # export CUMM_CUDA_ARCH_LIST="8.6;8.9;12.0"  # optional for direct install
+  export CUMM_DISABLE_JIT="1"
+  export SPCONV_DISABLE_JIT="1"
+  pip install git+https://github.com/FindDefinition/cumm.git@v0.8.2
+  pip install git+https://github.com/traveller59/spconv.git@v2.3.8 --no-deps 
   ```
 
 - If `mpi4py` is failed to install, try:
