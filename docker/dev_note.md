@@ -1,4 +1,4 @@
-# DEV NOTE 20260305 (CUDA 12.6)
+# DEV NOTE 20260306 (CUDA 12.8)
 
 This file contains the original, fully-tested manual steps used to build the BEVFusion training environment interactively inside a container.
 
@@ -97,24 +97,24 @@ This file contains the original, fully-tested manual steps used to build the BEV
 
 ## Create a container for BEVFusion
 
-- Pull the [official NVIDIA CUDA 12.6.2](https://gitlab.com/nvidia/container-images/cuda/blob/master/doc/unsupported-tags.md#cuda-1262-2) on host:
+- Pull the [official NVIDIA CUDA 12.8.0](https://gitlab.com/nvidia/container-images/cuda/blob/master/doc/unsupported-tags.md#cuda-1280-2) on host:
 
   ```bash
-  docker pull nvidia/cuda:12.6.2-cudnn-devel-ubuntu20.04
+  docker pull nvidia/cuda:12.8.0-cudnn-devel-ubuntu20.04
   ```
 
-- Create and run `bev-train-cu126` container with a mounted workspace `home/$USER/docker/bev_train_cu126:/workspace`:
+- Create and run `bev-train-cu128` container with a mounted workspace `home/$USER/docker/bev_train_cu128:/workspace`:
 
   ```bash
   docker run --gpus all -it \
-      --name bev-train-cu126 \
+      --name bev-train-cu128 \
       --shm-size=32g \
-      -v /home/$USER/docker/bev_train_cu126:/workspace \
-      nvidia/cuda:12.6.2-cudnn-devel-ubuntu20.04 \
+      -v /home/$USER/docker/bev_train_cu128:/workspace \
+      nvidia/cuda:12.8.0-cudnn-devel-ubuntu20.04 \
       bash
   ```
 
-- Install all necessary packages and miniconda inside the running container `bev-train-cu126`:
+- Install all necessary packages and miniconda inside the running container `bev-train-cu128`:
 
   <details><summary>Show more details</summary>
 
@@ -171,11 +171,11 @@ This file contains the original, fully-tested manual steps used to build the BEV
 
 ## Install requirements
 
-- Enter the container `bev-train-cu126` from host:
+- Enter the container `bev-train-cu128` from host:
 
   ```bash
-  docker restart bev-train-cu126
-  docker exec -it bev-train-cu126 bash
+  docker restart bev-train-cu128
+  docker exec -it bev-train-cu128 bash
   ```
 
 - Install `opencv-python` and `numpy`:
@@ -185,10 +185,10 @@ This file contains the original, fully-tested manual steps used to build the BEV
   pip install numpy==1.26.4 "opencv-python<4.12"
   ```
 
-- Install [PyTorch](https://pytorch.org/) 2.10.0 + CUDA 12.6 (Max support: `compute_90`, `sm_90`):
+- Install [PyTorch](https://pytorch.org/) 2.10.0 + CUDA 12.8 (Max support: `compute_120`, `sm_120`):
 
   ```bash
-  pip install torch==2.10.0 torchvision==0.25.0 --index-url https://download.pytorch.org/whl/cu126
+  pip install torch==2.10.0 torchvision==0.25.0 --index-url https://download.pytorch.org/whl/cu128
   ```
 
 - Install [OpenMPI v4.0.7](https://www.open-mpi.org/software/ompi/v4.0/) with CUDA:
@@ -253,7 +253,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
 
     ```bash
     cd mmcv
-    export TORCH_CUDA_ARCH_LIST="8.6;8.9"
+    export TORCH_CUDA_ARCH_LIST="8.6;8.9;12.0"
     MAKEFLAGS="-j$(nproc)" MMCV_WITH_OPS=1 FORCE_CUDA=1 pip install -e . --no-build-isolation -v
     ```
 
@@ -281,10 +281,19 @@ This file contains the original, fully-tested manual steps used to build the BEV
       mpi4py \
       future \
       tensorboard \
-      cumm-cu126 \
-      spconv-cu126 \
       numpy==1.26.4 \
       "opencv-python<4.12"
+  ```
+
+- Install custom [`cumm`](https://github.com/FindDefinition/cumm.git) and [`spconv`](https://github.com/traveller59/spconv.git) with CUDA 12.8:
+
+  ```bash
+  export CUMM_CUDA_VERSION="12.8"
+  export CUMM_CUDA_ARCH_LIST="8.6;8.9;12.0"
+  export CUMM_DISABLE_JIT="1"
+  export SPCONV_DISABLE_JIT="1"
+  pip install git+https://github.com/FindDefinition/cumm.git@v0.8.2
+  pip install git+https://github.com/traveller59/spconv.git@v2.3.8 --no-deps 
   ```
 
 - Install `flash-attn==1.0.9` and `setuptools==59.5.0`:
@@ -296,11 +305,11 @@ This file contains the original, fully-tested manual steps used to build the BEV
 
 ## Export docker image
 
-- Enter the container `bev-train-cu126` from host:
+- Enter the container `bev-train-cu128` from host:
 
   ```bash
-  docker restart bev-train-cu126
-  docker exec -it bev-train-cu126 bash
+  docker restart bev-train-cu128
+  docker exec -it bev-train-cu128 bash
   ```
 
 - Clean inside the running container:
@@ -315,33 +324,33 @@ This file contains the original, fully-tested manual steps used to build the BEV
   rm -rf ~/.cache/*
   ```
 
-- Export to `bev_train_cu126_2026.tar` from host:
+- Export to `bev_train_cu128_2026.tar` from host:
 
   ```bash
-  docker commit bev-train-cu126 bev-train:cu126
-  docker save -o bev_train_cu126_2026.tar bev-train:cu126
-  sha256sum bev_train_cu126_2026.tar > bev_train_cu126_2026.tar.sha256
+  docker commit bev-train-cu128 bev-train:cu128
+  docker save -o bev_train_cu128_2026.tar bev-train:cu128
+  sha256sum bev_train_cu128_2026.tar > bev_train_cu128_2026.tar.sha256
   ```
 
 ## Import docker image
 
 - Install Docker on host -> See [[Prepare prerequisites](#prepare-prerequisites)]
 
-- Import from `bev_train_cu126_2026.tar` in host:
+- Import from `bev_train_cu128_2026.tar` in host:
 
   ```bash
-  sha256sum -c bev_train_cu126_2026.tar.sha256
-  docker load -i bev_train_cu126_2026.tar
+  sha256sum -c bev_train_cu128_2026.tar.sha256
+  docker load -i bev_train_cu128_2026.tar
   ```
 
-- Start the container with a mounted workspace `home/$USER/docker/bev_train_cu126:/workspace`:
+- Start the container with a mounted workspace `home/$USER/docker/bev_train_cu128:/workspace`:
 
   ```bash
   docker run --gpus all -it \
-      --name bev-train-cu126 \
+      --name bev-train-cu128 \
       --shm-size=32g \
-      -v /home/$USER/docker/bev_train_cu126:/workspace \
-      bev-train:cu126 \
+      -v /home/$USER/docker/bev_train_cu128:/workspace \
+      bev-train:cu128 \
       bash
   ```
 
@@ -350,8 +359,8 @@ This file contains the original, fully-tested manual steps used to build the BEV
 - Enter the container from host:
 
   ```bash
-  docker restart bev-train-cu126
-  docker exec -it bev-train-cu126 bash
+  docker restart bev-train-cu128
+  docker exec -it bev-train-cu128 bash
   ```
 
 - Clone and build `bevfusion` inside the running container:
@@ -360,7 +369,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
   cd /workspace
   git clone https://github.com/rathaumons/bevfusionx.git
   cd bevfusion
-  git checkout cu126
+  git checkout cu128
   python setup.py develop
   pip list
   ```
