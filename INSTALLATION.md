@@ -32,7 +32,7 @@ This guide walks you through installing the project directly on your machine. If
   pip install numpy==1.26.4 "opencv-python<4.12"
   ```
 
-- Install [PyTorch](https://pytorch.org/) 2.10.0 + CUDA 12.6 (Max support: `compute_120`, `sm_120`):
+- Install [PyTorch](https://pytorch.org/) 2.10.0 + CUDA 12.8 (Max support: `compute_120`, `sm_120`):
 
   <details><summary>Show more details</summary>
 
