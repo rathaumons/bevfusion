@@ -21,13 +21,11 @@ def make_cuda_ext(
             "-D__CUDA_NO_HALF_OPERATORS__",
             "-D__CUDA_NO_HALF_CONVERSIONS__",
             "-D__CUDA_NO_HALF2_OPERATORS__",
-            "-gencode=arch=compute_70,code=sm_70",
             "-gencode=arch=compute_75,code=sm_75",
-            "-gencode=arch=compute_80,code=sm_80",
+            # "-gencode=arch=compute_80,code=sm_80",  # Data Center GPUs (A30, A100)
             "-gencode=arch=compute_86,code=sm_86",
             "-gencode=arch=compute_89,code=sm_89",
-            "-gencode=arch=compute_90,code=sm_90",
-            # "-gencode=arch=compute_120,code=sm_120",  # CUDA 12.8 or newer
+            # "-gencode=arch=compute_90,code=sm_90",  # Data Center GPUs (H100, H200, GH200)
         ]
         sources += sources_cuda
     elif (torch.cuda.is_available() and torch.version.hip is not None) or os.getenv("FORCE_ROCM", "0") == "1":
