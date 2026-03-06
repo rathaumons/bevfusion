@@ -9,7 +9,5 @@ yapf==0.40.1
 mpi4py
 future
 tensorboard
-cumm-cu126
-spconv-cu126
 numpy==1.26.4
 opencv-python<4.12
