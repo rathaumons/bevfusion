@@ -114,7 +114,7 @@ This guide walks you through installing the project directly on your machine. If
 
   </details>
 
-- Clone the repo and install Python Packages:
+- Clone the repo and install Python packages:
 
   ```bash
   cd ~  # or choose your preferred location
