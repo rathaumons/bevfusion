@@ -1,4 +1,4 @@
-# DEV NOTE 20260310 (CUDA 12.8)
+# DEV NOTE 20260315 (CUDA 12.8)
 
 This file contains the original, fully-tested manual steps used to build the BEVFusion training environment interactively inside a container.
 
@@ -288,13 +288,7 @@ This file contains the original, fully-tested manual steps used to build the BEV
 - Install custom [`cumm`](https://github.com/FindDefinition/cumm.git) and [`spconv`](https://github.com/traveller59/spconv.git) with CUDA 12.8:
 
   ```bash
-  export CUMM_CUDA_VERSION="12.8"
-  export CUMM_CUDA_ARCH_LIST="8.6;8.9;12.0"
-  export CUMM_DISABLE_JIT="1"
-  export SPCONV_DISABLE_JIT="1"
-  export CUMM_NVRTC_STD="c++17"
-  pip install git+https://github.com/rathaROG/cumm-gpu.git
-  pip install git+https://github.com/rathaROG/spconv-gpu.git
+  pip install cumm-cu128 spconv-cu128 --extra-index-url https://ratharog.github.io/cumm-spconv/
   ```
 
 - Install `flash-attn==1.0.9` and `setuptools==59.5.0`:
